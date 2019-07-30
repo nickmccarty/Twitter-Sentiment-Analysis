@@ -235,9 +235,9 @@ def get_tweets_predictions(tweets, perform_prints=True):
     # model = joblib.load('final_model.pkl')
 
     print("Loading other information...")
-    tf_vectorizer = joblib.load('models/baseline_tfidf.joblib')
-    idf_vector = joblib.load('models/baseline_idf.joblib')
-    pos_vectorizer = joblib.load('models/baseline_pos.joblib')
+    tf_vectorizer = joblib.load('py3models/final_tfidf.pkl')
+    idf_vector = joblib.load('py3models/final_idf.pkl')
+    pos_vectorizer = joblib.load('py3models/final_pos.pkl')
     #Load ngram dict
     #Load pos dictionary
     #Load function to transform data
