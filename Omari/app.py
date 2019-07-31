@@ -30,12 +30,12 @@ def aboutus():
     return render_template('aboutus.html')
 
 @app.route('/models')
-def aboutus():
+def moddels():
     '''Return tech_section on models'''
     return render_template('models.html')
 
 @app.route('/contact')
-def aboutus():
+def contact():
     '''Return contact page'''
     return render_template('contact.html')
 
