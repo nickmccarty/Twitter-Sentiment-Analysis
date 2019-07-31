@@ -17,5 +17,5 @@ def api_topic(api,topic):
     return pd.DataFrame(tweet_dict)
 
 def text_transform(textinput):
-    dict_to_df = {'text':textinput}
+    dict_to_df = {'tweet':[textinput]}
     return pd.DataFrame(dict_to_df)

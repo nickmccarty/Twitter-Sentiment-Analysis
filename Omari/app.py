@@ -60,10 +60,10 @@ def predict():
         if query_type == 'topic':
             ####### topic query
             if model_type == 'loglinsvc':
-                topic_tweets_df = pd.DataFrame(api_topic(api,query))
+                topic_tweets_df = api_topic(api,query)
                 results =logregress_linsvc(topic_tweets_df)
             elif model_type == 'lstm':
-                topic_tweets_df = pd.DataFrame(api_topic(api,query))
+                topic_tweets_df = api_topic(api,query)
                 results =LSTM(topic_tweets_df)
             elif model_type == 'luck':
                 results = "I'll finish by deadline.Swear"
