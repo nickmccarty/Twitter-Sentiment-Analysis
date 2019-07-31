@@ -29,6 +29,16 @@ def aboutus():
     '''Return about us'''
     return render_template('aboutus.html')
 
+@app.route('/models')
+def aboutus():
+    '''Return tech_section on models'''
+    return render_template('models.html')
+
+@app.route('/contact')
+def aboutus():
+    '''Return contact page'''
+    return render_template('contact.html')
+
 ######## /prectic route takes a form submission. makes predictions based on form imputs for query input, query type,model type.
 @app.route('/predict',methods = ['POST'])
 def predict():
