@@ -124,19 +124,19 @@ X_test = sequence.pad_sequences(X_test, maxlen=len_max)
 from keras.models import load_model
 model = load_model('lstm_model.h5',compile=False)
 
-# save as JSON
-json_string = model.to_json()
+# # save as JSON
+# json_string = model.to_json()
 
-# save as YAML
-yaml_string = model.to_yaml()
+# # save as YAML
+# yaml_string = model.to_yaml()
 
-# model reconstruction from JSON:
-from keras.models import model_from_json
-model = model_from_json(json_string)
+# # model reconstruction from JSON:
+# from keras.models import model_from_json
+# model = model_from_json(json_string)
 
-# model reconstruction from YAML:
-from keras.models import model_from_yaml
-model = model_from_yaml(yaml_string)
+# # model reconstruction from YAML:
+# from keras.models import model_from_yaml
+# model = model_from_yaml(yaml_string)
 
 # RUN MODEL on TEST DATA!
 predicted_output = model.predict(X_test, batch_size=256)
