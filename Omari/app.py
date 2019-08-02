@@ -12,6 +12,7 @@ import tweepy
 import json
 from query_functions import api_topic,text_transform
 from model import * #model function goes Here
+from utils import tokenize,preprocess
 
 app= Flask(__name__)
 
@@ -30,7 +31,7 @@ def aboutus():
     return render_template('aboutus.html')
 
 @app.route('/models')
-def moddels():
+def models():
     '''Return tech_section on models'''
     return render_template('models.html')
 
