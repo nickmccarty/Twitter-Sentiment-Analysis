@@ -7,7 +7,6 @@ import nltk
 from nltk.stem.porter import *
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
 from bs4 import BeautifulSoup
 import string
 import re
@@ -18,10 +17,11 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import GridSearchCV
-# import matplotlib.pyplot as plt
-# import seaborn
 import joblib
-# %matplotlib inline
+import warnings
+import os
+
+lemmatizer = WordNetLemmatizer()
 #########################################################################
 '''the model runs in appy.py. however the pkl files are loaded in model.py.the pickle idf & tfidf files
     use preprocess and tokenize in their vectorizers. those functions must be available to main.
@@ -66,17 +66,17 @@ def tokenize(tweet):
 
 def logregress_linsvc(input):
 
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('punkt')
-    nltk.download('wordnet')
+    # nltk.download('averaged_perceptron_tagger')
+    # nltk.download('punkt')
+    # nltk.download('wordnet')
 
-    df = input
 
-    print(df.describe())
 
-    print(df.columns)
 
-    base_tweets=df.tweet
+
+    print(input.keys)
+
+    base_tweets=input['text']
     tweets = [x for x in base_tweets if type(x) == str]
 
     stopwords = nltk.corpus.stopwords.words("english")
@@ -89,10 +89,6 @@ def logregress_linsvc(input):
     #################################################################################################
     '''Preprocess tweets, tokenize, and gather feature,POS tags'''
     ################################################################################################
-
-
-
-
 
 
     def basic_tokenize(tweet):
@@ -181,9 +177,6 @@ def logregress_linsvc(input):
     ###########################################################################################
 
 
-    import warnings
-
-    import os
     warnings.simplefilter(action='ignore', category=FutureWarning)
 
     ########################
@@ -192,18 +185,18 @@ def logregress_linsvc(input):
     print ("Loading trained classifier... ")
 
 
-    model = joblib.load('model_py3.pkl')
+    model = joblib.load('true_model_py3.pkl')
 
     print ("Loading other information...")
     ###############
-    tf_vectorizer = joblib.load('true_tfidf_py3.pkl')
+    tf_vectorizer = joblib.load('actual_tfidf_py3.pkl')
     #############
 
-    idf_vector = joblib.load('idf_py3.pkl')
+    idf_vector = joblib.load('actual_idf_py3.pkl')
 
     #############
 
-    pos_vectorizer = joblib.load('pos_vect_py3.pkl')
+    pos_vectorizer = joblib.load('actual_pos_vect_py3.pkl')
 
     #######################################################
     '''Construct tfidf matrix and get relevant scores'''
@@ -272,13 +265,17 @@ def logregress_linsvc(input):
 
     print(f'Neither tweets: {neither}; % of total: {neither/(hate+hurtful+neither)}')
     neither_results = f'Neither tweets: {neither}; % of total: {neither/(hate+hurtful+neither)}'
-    results = {'hate':hate_results,
-                'hurtful':hurtful_results,
-                'neither':neither_results}
+    results = {
+                'hate_data':{'count':hate,
+                            'percentTotal':int((hate/(hate+hurtful+neither))*100)},
+                'hurt_data':{'count':hurtful,
+                            'percentTotal':int((hurtful/(hate+hurtful+neither))*100)},
+                'neither_data':{'count':neither,
+                                'percentTotal':int((neither/(hate+hurtful+neither))*100)},
+                'total_count':hate+hurtful+neither
+                }
     return results
 
-def LSTM(input):
-    return "no lstm model file yet"
 
 # for i,t in enumerate(tweets):
 #     print (t)

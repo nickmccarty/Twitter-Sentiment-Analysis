@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Hate Speech Detection</title>
+    <title>Results:Hate Speech Detection</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="../static/css/custom-bs.css">
@@ -36,7 +36,7 @@
 
           <nav class="mx-auto site-navigation">
             <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-              <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
+              <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
               <li><a href="{{ url_for('models') }}">Tech</a></li>
               <li><a href="{{ url_for('aboutus') }}">About</a></li>
               <li class="d-lg-none"><a href="{{ url_for('contact') }}">Contact Us</a></li>
@@ -60,10 +60,45 @@
         <div class="row align-items-center justify-content-center">
           <div class="col-md-12">
             <div class="mb-5 text-center">
-              <h1 class="text-white font-weight-bold">Smart Hate Speech detection </h1>
-              <p>Using Machine Learning and neural networks in the mission to erase hate.</p>
+              <h1 class="text-white font-weight-bold">Results</h1>
+
+              <!-- <label for="querytypeinput"><h3 style="color:rgba(255, 255, 255, 0.6);">You searched within</h3></label>
+              <label for="keyword" id="querytypeinput"><h3 class="text-white font-weight-bold"> {{query_type}}: </h3></label> -->
+              <h3 style="color:rgba(255, 255, 255, 0.6);">You searched within
+                <span class="text-white font-weight-bold"> {{query_type}}: </span>
+              </h3>
+              <p id="keyword" style="color:rgba(255, 255, 255, 0.6);">{{text_snip}}
+                <span> ...Truncated text</span>
+              </p>
+              <br>
+              <!-- <h5 style="color:rgba(255, 255, 255, 0.6);">Item count is the number of sentences.A single word, or single sentence is 1 item.Example: <a href="#">Support. </a></h5> -->
+              <h4 style="color:rgba(255, 255, 255, 0.6);">Total count of items classified using
+                <span class="text-white font-weight-bold"> {{model_type}}</span>
+                <span id="count_tweets" style="color:#89F47F;">: {{count_items}} </span>
+              </h4>
+
+              <br>
+              <br>
+              <h3 class="text-white">Hateful items:
+                <span id="" style="color:#FB6D65;"> {{hate_count}} </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#FB6D65;"> {{hate_percent}} </span>
+              </h3>
+              <h3 class="text-white">Hurtful items:
+                <span id="" style="color:#FBF279;"> {{hurt_count}} </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#FBF279;"> {{hurt_percent}} </span>
+              </h3>
+              <h3 class="text-white">Harmless items:
+                <span id="" style="color:#89F47F;"> {{neither_count}} </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#89F47F;"> {{neither_percent}} </span>
+              </h3>
             </div>
-            <form name="searchForm" action='/predict' method="POST" class="search-jobs-form">
+            <br>
+            <hr style="color:white;width:100%;">
+            <h1 class="text-white font-weight-bold">Next search</h1>
+            <form action='/predict' method="POST" class="search-jobs-form">
               <div class="row mb-5">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
                   <input id="queryinput" name="query_input" type="text" class="form-control form-control-lg" placeholder="Topic,Name,keywords...">
@@ -83,19 +118,12 @@
                   </select>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <button name="formSubmit" type="submit" value="Submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>HateOrNah</button>
+                  <button type="submit" value="Submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>HateOrNah</button>
                 </div>
-                <br>
               </div>
             </form>
             <div id="spinner"  class="">
 
-            </div>
-            <div class="row align-items-center justify-content-center">
-              <p>Topic: Twitter Specific. Analyze tweets related to the input keyword.</p>
-              <p>User: Twitter Specifc. Analyze a specific user's timelime. Username must be exact, with OR without @.</p>
-              <!-- <p>Text: Accepts any english text string. Multiple sentences are classified by each senctence. </p> -->
-              <p>Text: Accepts any english text string.</p>
             </div>
           </div>
         </div>
