@@ -7,3 +7,5 @@ Within the "FINAL" folder, there is a folder called "LSTM". Within the "LSTM" fo
 The LSTM classifier is simply too large even for LFS to push to the repo, hence the necessity of creating it from the provided notebook yourself in order to make the app run as it should. Note that you'll need to be in the top level of the working directory (cd back into "FINAL") to run "app.py" and activate the app in your local server.
 
 Based on work done by Davidson, et al. (2017), as detailed in their [paper](https://arxiv.org/abs/1703.04009).
+
+Our presentation of our findings can be found [here](https://drive.google.com/file/d/1Q8i7kgMXVrcf7ohsbQ5v3Vr6dU0MOkvn/view?usp=drivesdk).
