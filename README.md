@@ -1,5 +1,7 @@
-# Please use the "development" branch to push your work!
+# Automated Hate Speech Classification on Tweets
 
-## In the event that you don't have your API keys, you'll find credentials provided in the "Notebook Examples."
+## LSTM Neural Network Classifier
 
-### Scope of Work can be found [here](https://docs.google.com/document/d/1H4sKoo_S_lITEG_mdsILKSM09oxS3vMalHmTXF_535I/edit?usp=sharing).
+Within the "FINAL" folder, there is a folder called "LSTM". Within the "LSTM" folder, there is a "notebooks" folder. Use the "LSTM_Model_Maker" notebook in the "notebooks" folder to create the LSTM classifier, otherwise the app won't work properly.
+
+The LSTM classifier is simply too large even for LFS to push to the repo, hence the necessity of creating it from the provided notebook yourself in order to make the app run as it should. Note that you'll need to be in the top level of the working directory (cd back into "FINAL") to run "app.py" and activate the app in your local server.
