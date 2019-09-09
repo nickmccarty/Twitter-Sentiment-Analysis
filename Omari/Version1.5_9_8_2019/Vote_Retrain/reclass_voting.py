@@ -88,7 +88,7 @@ def vote(groupby_obj):
         # Store text string for this group by using first result/[0]
         item_dict['text'] = text_set['text'][0]
         # Take individual like-text group and group by the class value.
-        # The count of entries in a class group is the total votes for that class.
+        # The count of entries in a class group is the totalvotes for that class.
         textset_votes = pd.DataFrame(text_set.groupby('class').count())
         # Store class votes. Class is now the true index.
         # The row containg the count for a specific class, has an index in the series that is its class
@@ -117,8 +117,8 @@ def vote(groupby_obj):
         except:
             item_dict['neither'] = 0
 
-        # Calculate total votes
-        item_dict['total votes'] = item_dict['hate'] + item_dict['hurt'] + item_dict['neither']
+        # Calculate totalvotes
+        item_dict['totalvotes'] = item_dict['hate'] + item_dict['hurt'] + item_dict['neither']
 
         # Create list of vote counts, to find max. If any one index in the list is greater,
         # than the sum of the remaining items, then the decision is a majority win of total vote.
@@ -137,7 +137,7 @@ def vote(groupby_obj):
         # If there is a majority win ,record that class as the voted final class
         if is_unanimous(votelist) is not False:
 
-          item_dict['voted class'] = is_unanimous(votelist)
+          item_dict['votedclass'] = is_unanimous(votelist)
         # If no majority win, take max of the 3 classes. The index of that max value is its' class
         elif is_unanimous(votelist) is False:
           # Check if there is a tie for max value in the vote count list
@@ -160,10 +160,10 @@ def vote(groupby_obj):
           print(f'**** The list without max : {without_max}')
           if max(votelist) not in without_max:
               # If no tie exist then the class list is the index of the max value
-              item_dict['voted class'] = votelist.index(max(votelist))
+              item_dict['votedclass'] = votelist.index(max(votelist))
           else:
               print(f'*** Yes there was a tie for max val: {max(votelist)} | no decision made ****')
-              item_dict['voted class'] = 777
+              item_dict['votedclass'] = 777
           # 777 is the value entered for no class decision. remains an int so column tpye can stay as int type.
 
 
