@@ -12,13 +12,13 @@
 
 * To be used in AWS a requirements.txt with the normal format `modulename=vers.i.on`, upload to PyPI required.
 
-* PyPi package is tweepy-mashup. Version is 1.0.0
+* PyPi package is tweepymashup. Version is 1.0.7 (as of 10/9/2019)
 
-  `pip install tweepy-mashup`
+  `pip install tweepymashup`
 
 * Updated requirements.txt to include this package
   > requirements.text
 
-    `tweepy-mashup=1.0.0`
+    `tweepymashup=1.0.7`
 
 * **Tweepy Mashup repo** [link] (https://github.com/oblockton/tweepy_fix 'Tweepy Mashup Repo')

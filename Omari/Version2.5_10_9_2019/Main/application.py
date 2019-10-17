@@ -1,6 +1,6 @@
 import os
 from flask import Flask,render_template,redirect,request,jsonify,url_for
-import tweepy
+import tweepymashup
 from model import logregress_linsvc
 import requests
 import json
@@ -24,12 +24,12 @@ consumer_secret = os.environ.get('CONSUMER_SECRET')
 access_token = os.environ.get('ACCESS_TOKEN')
 access_token_secret = os.environ.get('ACCESS_SECRET')
 
-
-
 consumer_key2 = os.environ.get('CONSUMER_KEY2')
 consumer_secret2 = os.environ.get('CONSUMER_SECRET2')
 access_token2 = os.environ.get('ACCESS_TOKEN2')
 access_token_secret2 = os.environ.get('ACCESS_SECRET2')
+
+
 
 oauth_keys = [
             [consumer_key,consumer_secret,access_token,access_token_secret],
@@ -38,13 +38,13 @@ oauth_keys = [
 
 auths = []
 for consumer_key,consumer_secret,access_token,access_token_secret in oauth_keys:
-    auth = tweepy.OAuthHandler(consumer_key,consumer_secret)
+    auth = tweepymashup.OAuthHandler(consumer_key,consumer_secret)
     auth.set_access_token(access_token,access_token_secret)
     auths.append(auth)
 
 
 global api
-api = tweepy.API(auths, monitor_rate_limit=True, wait_on_rate_limit=True)
+api = tweepymashup.API(auths, monitor_rate_limit=True, wait_on_rate_limit=True)
 
 
 ########################################################################
@@ -56,7 +56,7 @@ api = tweepy.API(auths, monitor_rate_limit=True, wait_on_rate_limit=True)
 #Query for pulling tweets containing a keyword'''
 def api_topic(api,topic):
     tweet_dict = {'dates':[],'text':[]}
-    for tweet in tweepy.Cursor(api.search,q=topic, tweet_mode='extended',lang="en").items(300):
+    for tweet in tweepymashup.Cursor(api.search,q=topic, tweet_mode='extended',lang="en").items(300):
         if 'RT @' not in tweet.full_text:
             tweet_dict['dates'].append((tweet.created_at).strftime('%m-%d-%Y'))
             tweet_dict['text'].append(tweet.full_text)
@@ -66,7 +66,7 @@ def api_topic(api,topic):
 #Query for pulling tweets only from a single useer timelime specified as the input, when form choice is 'user' '''
 def api_user(api,user):
     user_posts = {'dates':[],'text':[]}
-    for post in tweepy.Cursor(api.user_timeline, screen_name=user, tweet_mode='extended',lang="en").items(300):
+    for post in tweepymashup.Cursor(api.user_timeline, screen_name=user, tweet_mode='extended',lang="en").items(300):
         user_posts['dates'].append((post.created_at).strftime('%m-%d-%Y'))
         user_posts['text'].append(post.full_text)
     return user_posts
@@ -81,6 +81,8 @@ def text_transform(textinput):
 
 # define model_server url
 modelserv_url = os.environ.get('MODELSERV_URL')
+
+
 
 #####################################
 # Create routes
@@ -159,7 +161,6 @@ config = {
 
 # function to enter reclassed items/reclass form submission into DB
 def enter_items(itemarray,cursor,connector):
-    try:
         cursor.execute(f"USE {config['database']}")
         print(f"****** USING DB: {config['database']} *******")
         try:
@@ -177,9 +178,10 @@ def enter_items(itemarray,cursor,connector):
             connector.commit()
             cursor.close()
         except mysql.connector.Error as err:
-            print(err)
-    except mysql.connector.Error as err:
-        print("Database {} does not exist".format(config['database']))
+            print('!!!! Error at item insert into table SQL: {}'.format(err))
+            connector.close()
+            return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
+
 
 
 @application.route('/reclass',methods = ['POST'])
@@ -205,16 +207,132 @@ def reclass():
             if (err.errno == errorcode.ER_ACCESS_DENIED_ERROR):
                  print("Something is wrong with your user name or password")
                  print(err)
+                 cnx.close()
                  return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
             elif (err.errno == errorcode.ER_BAD_DB_ERROR):
                 print("Database does not exist")
+                cnx.close()
                 return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
             else:
+                print('Some other SQL error occured')
                 print(err)
+                cnx.close()
                 return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
+        except Exception as e:
+            print('!!!! Error in Reclass Submisson - Not a SQL error !!!!')
+            print('Error: {}'.format(e))
+            return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
 
-        else :
-            cnx.close()
+
+###########################################################################
+''' API reclass route and helper function'''
+##########################################################################
+def enter_items_api(itemarray,cursor,connector):
+        cursor.execute(f"USE {config['database']}")
+        print(f"****** USING DB: {config['database']} *******")
+        try:
+            insert_date = datetime.datetime.now().date().strftime('%Y-%m-%d')
+            for item in itemarray:
+                print(insert_date)
+                print(" inserting:")
+                print(item)
+                print('^^^^this item^^^^^')
+                reclassed_items ="""INSERT INTO reclassed (dateinput, text, class)
+                           VALUES
+                           (%s,%s,%s)"""
+                cursor.execute(reclassed_items,( insert_date,str(item[1]),int(item[0]) ) )
+                print(" ******** Table insert Successful ********")
+            connector.commit()
+            cursor.close()
+        #chech for error at table insert of reclassed item.
+        except ValueError as err:
+            # Check if error casting a string format classlabel, as integer for table input.Ex: casting string 'one' as int raises value error.
+            # Table only accepts int.
+            if str(err)[:23] == 'invalid literal for int':
+                print("!!!! Error at item insert into table SQL - Class Label input can't be cast as int() i.e 'six' not allowed: {}".format(err))
+                connector.close()
+                # Raise a ValueError to be caught later.
+                raise ValueError('int cast classlabel')
+            else:
+                print('!!!! Error at item insert into table SQL - Not Class label casting : {}'.format(err))
+                raise ValueError(err)
+
+@application.route('/api_reclass_submit',methods = ['POST'])
+def reclass_api():
+    if request.method == 'POST':
+        reclass_input = request.json
+        # Check if post data is a list.
+        if isinstance(reclass_input,list):
+            # verify each item in list is a list or tuple.
+            if all(isinstance(item,(list,tuple)) for item in reclass_input):
+                # Verify that the class labels of each item are 0,1,or 2.
+                if all(str(item[0])=='0' or str(item[0])=='1' or str(item[0])=='2' for item in reclass_input ):
+                    print('**** This is the reclass input- API SUBMIT REQUEST ****')
+                    # print(dir(reclass_input))
+                    print(reclass_input[:3])
+                    # print(reclass_input.data)
+                    print('**** END RECLASS INPUT - API SUBMIT REQUEST ****')
+
+                    try:
+                        cnx = mysql.connector.connect(**config)
+                        c = cnx.cursor()
+                        enter_items_api(reclass_input,c,cnx)
+                        cnx.close()
+                        print( '**** Reclass submit successful -API SUBMIT REQUEST ****' )
+                        return jsonify({'api_code':200, 'message':'successful' })
+                    # Error handling for mysql connector errors.
+                    except mysql.connector.Error as err:
+                        if (err.errno == errorcode.ER_ACCESS_DENIED_ERROR):
+                             print("!!!! Something is wrong with your user name or password- API SUBMIT REQUEST !!!!")
+                             print(str(err))
+                             cnx.close()
+                             return jsonify({ 'api_code':403, 'message':'ACCESS DENIED: {}'.format(err) })
+                        elif (err.errno == errorcode.ER_BAD_DB_ERROR):
+                            print("!!! Database does not exist - API SUBMIT REQUEST !!!")
+                            print(str(err))
+                            cnx.close()
+                            return jsonify({ 'api_code':404, 'message':'BAD_DB_ERROR: {}'.format(err) })
+                        # Table entry error. Occurs if non-int entered for classlabel. However this should be caught by the value error.
+                        elif err.errno == 1366:
+                            print(' SQL connector err - Table entry - likely not integer - API SUBMIT REQUEST')
+                            print(str(err))
+                            cnx.close()
+                            return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful-Likely Expected integer for class label: {}'.format(str(err)) })
+                        # Catch an other SQL errors.
+                        else:
+                            print('Some other SQL error occured - API SUBMIT REQUEST')
+                            print(str(err))
+                            cnx.close()
+                            return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful at SQL Exception-else: {}'.format(str(err)) })
+                    # Catch vaule error issues raised at table entry. Return an appropriate API error response message.
+                    except ValueError as valerr:
+                        if str(valerr) == 'int cast classlabel':
+                            print('!!! enter_items_api() Passed Value Error . integer.at table insert.Class label')
+                            cnx.close()
+                            return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful at index [0] of your data, Classlabel, expected single digit integer or a single number in string format: trace :passed from enter_items_api() :{}'.format(str(valerr)) })
+                        else:
+                            print('!!! enter_items_api() Passed Value Error .NOT  integer error: verbose {}'.format(valerr))
+                            cnx.close()
+                            return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful:Uncaught Value error at table entry. check input types. verbose: {}'.format(str(valerr)) })
+                    # Catch any errors that are not sql specific, or table entry errors.
+                    except Exception as e :
+                        print('!!!! Error in Reclass Submisson - Not a SQL error - API SUBMIT REQUEST !!!!')
+                        print('Error: {}'.format(e))
+                        cnx.close()
+                        return jsonify({'api_code':500, 'message':'DB insert Unsuccessful . Uncaught Server Exception: {}'.format(e)})
+                # Validate each class label is 0,1,or 2, on failure respond with error message.
+                else:
+                    print('!!!! Error in Reclass Submisson - Input contained class label that was not 0, 1, or 2 - API SUBMIT REQUEST !!!!')
+                    return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. Class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither'})
+            # Validate each item is list or tuple. On failure respond with appropriate API error message.
+            else:
+                print('!!!! Error in Reclass Submisson - Submission list items are not a list or tuple - API SUBMIT REQUEST !!!!')
+                return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. TypeError: data input must be a list of lists or tuples.[ [classlabel, text] ] or [ (classlabel,text) ]'})
+        # Validate the POST data is a list. On failure respond with appropriate API error message.
+        else:
+            print('!!!! Error in Reclass Submisson - Submission is not a list - API SUBMIT REQUEST !!!!')
+            return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. TypeError: data input must be a list.[ [classlabel, text] ] or [ (classlabel,text) ]'})
+
 
 
 
@@ -276,7 +394,7 @@ def predict():
                             hate_count=results['hate_data']['count'],hate_percent=results['hate_data']['percentTotal'],
                             hurt_count=results['hurt_data']['count'],hurt_percent=results['hurt_data']['percentTotal'],
                             neither_count=results['neither_data']['count'],neither_percent=results['neither_data']['percentTotal'])
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
@@ -326,7 +444,7 @@ def predict():
                                 print("!!!! ModelServ Error verbose: " + str(e))
                                 print("!!!! ModelServ *server Err fired from try/except - TOPIC - state:UNLOCKING !!!!")
                                 return render_template('support.html', error = 'Model Serving Error')
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
@@ -367,7 +485,7 @@ def predict():
                             hate_count=results['hate_data']['count'],hate_percent=results['hate_data']['percentTotal'],
                             hurt_count=results['hurt_data']['count'],hurt_percent=results['hurt_data']['percentTotal'],
                             neither_count=results['neither_data']['count'],neither_percent=results['neither_data']['percentTotal'])
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
@@ -417,7 +535,7 @@ def predict():
                                 print("!!!! ModelServ Error verbose: " + str(e))
                                 print("!!!! ModelServ *server Err fired from try/except - USER - state:UNLOCKING !!!!")
                                 return render_template('support.html', error = 'Model Serving Error')
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
@@ -471,7 +589,7 @@ def predict():
                             hate_count=results['hate_data']['count'],hate_percent=results['hate_data']['percentTotal'],
                             hurt_count=results['hurt_data']['count'],hurt_percent=results['hurt_data']['percentTotal'],
                             neither_count=results['neither_data']['count'],neither_percent=results['neither_data']['percentTotal'])
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404, tweepy error is not error in teepy,but error in twitter
@@ -521,7 +639,7 @@ def predict():
                                 print("!!!! ModelServ Error verbose: " + str(e))
                                 print("!!!! ModelServ *server Err fired from try/except - Topic- state:UNLOCKED !!!!")
                                 return render_template('support.html', error = 'Model Serving Server Error')
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404, tweepy error is not error in teepy,but error in twitter
@@ -561,7 +679,7 @@ def predict():
                             hate_count=results['hate_data']['count'],hate_percent=results['hate_data']['percentTotal'],
                             hurt_count=results['hurt_data']['count'],hurt_percent=results['hurt_data']['percentTotal'],
                             neither_count=results['neither_data']['count'],neither_percent=results['neither_data']['percentTotal'])
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
@@ -611,7 +729,7 @@ def predict():
                             except Exception as e:
                                 print("!!!! ModelServ *server Err fired from try/except - USER - state:UNLOCKED !!!!")
                                 return render_template('support.html', error = 'Model Serving Server Error')
-                        except tweepy.TweepError as e:
+                        except tweepymashup.TweepError as e:
                             print(e)
                             if str(e)[-3:]== '404':
                                 # Search inputs that dont return a user will throw a TWITTER 404,
