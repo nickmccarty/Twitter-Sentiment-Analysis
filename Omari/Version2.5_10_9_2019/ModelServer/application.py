@@ -121,7 +121,7 @@ def model_serv():
         print('!!!!!!!!!!Try/Except fired - Return Error500 !!!!!!!')
         return jsonify('!!!Model Serv code error!!!!')
 
-# Route for API prediction/classificcation. POST only. Data sent should be a list of text strings to clasify.
+# Route for API/python library prediction/classificcation. POST only. Data sent should be a list of text strings to clasify.
 @application.route('/api_receiver', methods=['POST'])
 def api_model_serv():
     if request.method == 'POST':

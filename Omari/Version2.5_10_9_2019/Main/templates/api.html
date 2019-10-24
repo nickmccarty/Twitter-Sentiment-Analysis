@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>API: Erase Hate API</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="../static/css/custom-bs.css">
+  <link rel="stylesheet" href="../static/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="../static/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="../static/fonts/line-icons/style.css">
+  <!-- <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="../static/css/animate.min.css"> -->
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body id="top">
+
+
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+
+
+    <!-- NAVBAR -->
+    <header class="site-navbar mt-3">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="site-logo col-6"><a href="{{ url_for('index') }}">Erase Hate</a></div>
+
+          <nav class="mx-auto site-navigation">
+            <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
+              <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
+              <li><a href="{{ url_for('models') }}">Tech</a></li>
+              <li><a href="{{ url_for('api') }}">API</a></li>
+              <li><a href="{{ url_for('aboutus') }}">About</a></li>
+              <li class="d-lg-none"><a href="{{ url_for('contact') }}">Contact Us</a></li>
+            </ul>
+          </nav>
+
+          <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
+            <div class="ml-auto">
+              <a href="{{ url_for('contact') }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span
+                  class="mr-2 icon-paper-plane"></span>Contact Us</a>
+            </div>
+            <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span
+                class="icon-menu h3 m-0 p-0 mt-2"></span></a>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- HOME -->
+    <section class="home-section section-hero inner-page overlay bg-image"
+      style="background-image: url('../static/images/webbing2.jpg');" id="home-section">
+      <div class="container">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-12">
+            <div class="mb-5 text-center">
+              <h1 class="text-white font-weight-bold">API & Python Library</h1>
+              <p>Information- Instructions - Debugging</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="site-section" style="padding-top:20px;">
+      <div class="container">
+        <div class="row mb-5">
+          <!-- <div class="col-12 text-center" data-aos="fade">
+            <h2 class="section-title mb-3">Our Team</h2>
+          </div> -->
+        </div>
+
+        <h1 class="font-weight-bold text-center"> Erase Hate API & Python Library  </h1>
+        <br>
+        <p> To allow developers the ability to integrate hate speech classification and NLP into their own projects, we provide an API and Python Library.
+          The core functions of text classification, and submission of human classified text items can be accessed through the API. The Python library provides execution of classification requests and submission,
+        while also bundling methods to source data from Twitter, validate data inputs and API responses, and aggregate your results.
+        For most users, the Python library will get you from point A to B in less lines of code.</p>
+        <br>
+        <p class="text-center"><strong>** It is strongly suggested to use the Python Library when interacting with the API.**</strong></p>
+        <br>
+        <p class="text-center"><strong>** All data sent is anonymized, and no personally identifying information is stored when using our API**</strong></p>
+        <h3>Erase Hate Python Library:</h3>
+        <p> Documentation for the Python library is a available here: <a rel="noopener noreferrer" href="https://github.com/oblockton/Erase_Hate_Python_Library#erase-hate-python-library" target="_blank">Erase Hate Python Library Documentation</a> </p>
+
+        <hr style="color:lavender;width:100%;">
+        <br>
+        <br>
+        <h1 class=""><strong>API Documentation</strong></h1>
+        <br>
+        <ul><h2> Endpoints</h2>
+          <br>
+          <li><h3> /model_server </h3>
+            <span> Use this endpoint to make classification requests. Text items sent to this endpoint will be predicted/classified as 'hate', 'offensive', or 'neither'.
+            Results of a successful request will include an api code, the probability array, and a few basic aggregate statistics. An unsuccessful request will return an error response, containing
+            an API code and error message. See API Codes & Errors below. If you an unfamiliar with probability arrays or the direct output of an LSTM classification model,
+            please use the Erase Hate Python Library. Conversion from probability arrays to class labels, and any further parsing will need to be done locally via custom code or use of the Python library.</span>
+            <br>
+            <span><strong>Methods: </strong>POST only.</span>
+            <br>
+            <span><strong>POST data: </strong>A list of text items to perform NLP on. Format: [ 'text_item1', 'text_item2', 'text_item3', 'text_item4' ] </span>
+            <br>
+            <span><strong>Output: </strong>A JSON object with the following keys - </span>
+            <ul>
+              <li><strong>'api_code'</strong>: The api code, 200 if successful. Integer</li>
+              <li><strong>'prediction_array'</strong>: The probability arrays and direct output of the LSTM model. Each item within the outermost list, is a probability array.
+              Each probabilty array corresponds to a single text items. The list of probability arrays runs parallel to list of text items sent for classification( your input).
+              Meaning the probabiltyarray at 'prediction_array[1]', corresponds to the text item at 'your_input[1]'.</li>
+              <li><strong>'hate_data'</strong>: Aggregates for items classified as 'hate'. A dictionary with keys 'count' & 'percentTotal'.</li>
+              <li><strong>'hurt_data'</strong>: Aggregates for items classified as 'offensive'. A dictionary with keys 'count' & 'percentTotal'.</li>
+              <li><strong>'neither_data'</strong>: Aggregates for items classified as 'neither'. A dictionary with keys 'count' & 'percentTotal'.</li>
+              <li><strong>'total_count'</strong>: Total count of items classified.</li>
+
+            </ul>
+            <br>
+            <span><strong>Example</strong>: Making a successful classification request, validating the response, and printing the results.</span>
+            <pre><code>
+              sample_data = ['text1','text2','text3']
+              response = requests.post(url='https:://wwww.erasehateapp.com/model_server', json=sample_data)
+              results = response.json()
+              if results['api_code'] == 200:
+                print(results)
+            </code></pre>
+            <span><strong>Output:</strong></span>
+            <samp>
+              {'api_code': 200,
+               'hate_data': {'count': 0, 'percentTotal': 0},
+               'hurt_data': {'count': 1, 'percentTotal': 33},
+               'neither_data': {'count': 2, 'percentTotal': 66},
+               'prediction_array':  [[0.057494521141052246,0.4669722318649292,0.47553324699401855],
+                                    [0.023020759224891663, 0.15062041580677032, 0.8263587951660156],
+                                    [0.089484304189682, 0.5790634155273438, 0.33145225048065186]],
+               'total_count': 3}</samp>
+          </li>
+          <br>
+          <li><h3> /api_reclass_submit </h3>
+            <span> Use this endpoint to make submit text items that were classified by humans as 'hate', 'offensive', or 'neither'. These items may be items that were initally classified by humans, or items initally classified
+            by our model then reclassified by human end users. The items sent will be used to help retrain our model and improve accuracy. The response to submission requests will contain an API code, and an API message.
+            <strong>All data sent to this endpoint is anonymized and no personally identifying information will be stored.</strong></span>
+            <br>
+            <span><strong>Methods: </strong>POST only.</span>
+            <br>
+            <span><strong>POST data: </strong>A list of text items with a class label. Format: [ ['class label', 'text/tweet'], ['classlabel', 'text2/tweet2'], ['classlabel', 'text3/tweet3'] ]. The order of items within the list is explicit and required.
+            Class label at index [0], text at index[1]. Class labels may be integer or strings.
+            <ul><strong>Class Labels:</strong>
+              <li>0 or '0': The class label for 'hate'.</li>
+              <li>1 or '1': The class label for 'offensive'.</li>
+              <li>2 or '2': The class label for 'neither'</li>
+            </ul></span>
+            <span><strong>Output: </strong>A JSON object with the following keys - </span>
+            <ul>
+              <li><strong>'api_code'</strong>: The api code, 200 if successful. Integer</li>
+              <li><strong>'message'</strong>: A response message.</li>
+            </ul>
+            <br>
+            <span><strong>Example</strong>: Making a successful submission request, validating the response, and printing the results.</span>
+            <pre><code>
+              sample_data = [ [0, 'text'], [1, 'text_item2'], [2, 'text_item3'] ]
+              response = requests.post(url='https:://wwww.erasehateapp.com/api_reclass_submit', json=sample_data)
+              results = response.json()
+              if results['api_code'] == 200:
+                print(results)
+            </code></pre>
+            <span><strong>Output:</strong></span>
+            <samp>
+              {'api_code': 200,
+               'message':'successful'</samp>
+          </li>
+          <br>
+
+          <h2><strong>API Codes & Errors</strong></h2>
+          <br>
+          <p> The API endpoints will always respond to requests, as long as the the correct request method(POST) is used. If there are any issues completing a request successfully, an API code and error message will be returned to the user.
+            The two main areas where an error may occur are at validation of your POST data, or internal serever errors. ALL RESPONSES CONTAIN A KEY 'api_code'. Users are strongly encouraged to validate every response by checking the API code.
+            The API code and message will provide information to help catch and remediate any errors within your request.</p>
+          <br>
+          <p> When validating your response, first access the API code at key 'api_code' of the JSON response. If the API code is not 200(successful), the error message is contained at key 'message' of the JSON response.</p>
+          <ul><strong>API Codes:</strong>
+            <li><strong>200</strong>: Successful</li>
+            <li><strong>500</strong>: Unsuccessful. Error validating inputs or processing request. See corresponding response message</li>
+            <li><strong>403</strong>: Access denied. See corresponding error message.</li>
+            <li><strong>404</strong>: Resource not found. See corresponding error message.</li>
+          </ul>
+          <br>
+          <span><strong>Example</strong>: Making an invalid classification request by sending a python dictionary as our post data. Validating the response and printing the COMPLETE error response.</span>
+          <pre><code>
+            sample_data = {'sample_key':['text1','text2','text3']}
+            response = requests.post(url='https:://wwww.erasehateapp.com/model_server', json=sample_data)
+            results = response.json()
+            if results['api_code'] == 200:
+              *do something*
+            elif results['api_code'] == 500:
+              print(results['message'])
+          </code></pre>
+          <span><strong>Output:</strong></span>
+          <samp>{ 'api_code':500, 'message':"Model Server Error, TypeError: prediction input not a list. Proper input ['text','text','text','text']" }</samp>
+          <br>
+          <br>
+          <h3>404 & 403</h3>
+          <br>
+          <p> You generally should not receive an API 404 or 403 error. These errorz usually are the result of an unsuccessful insert of classified items into our database.
+          If you have received a 404 or 403 API code, please contact us: EraseHateData@gmail.com. </p>
+
+
+
+    </section>
+
+
+
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3></h3>
+            <ul class="list-unstyled">
+
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Erase Hate</h3>
+            <ul class="list-unstyled">
+              <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+              <li><a href="{{ url_for('models') }}">Tech</a></li>
+              <li><a href="{{ url_for('index') }}">Home</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <h3>Support</h3>
+            <ul class="list-unstyled">
+              <li><a href="{{ url_for('api') }}">API</a></li>
+              <li><a href="{{ url_for('support') }}">Support</a></li>
+              <li><a href="{{ url_for('terms_privacy') }}">Privacy</a></li>
+
+            </ul>
+          </div>
+          <div class="col-6 col-md-3 mb-4 mb-md-0">
+            <!-- <h3>Contact Us</h3>
+            <div class="footer-social">
+              <a href="#"><span class="icon-facebook"></span></a>
+              <a href="#"><span class="icon-twitter"></span></a>
+              <a href="#"><span class="icon-instagram"></span></a>
+              <a href="#"><span class="icon-linkedin"></span></a>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="row text-center">
+          <div class="col-12">
+            <p>
+              Copyright &copy;
+              <script>document.write(new Date().getFullYear());</script> All rights reserved | This service is made with <i
+                class="icon-heart-o" aria-hidden="true"></i> by SKOND Data
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+              <!-- Copyright &copy;
+              <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i
+                class="icon-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> -->
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- SCRIPTS -->
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/stickyfill.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery.fancybox.min.js') }}"></script>
+  <!-- <script src="{{ url_for('static', filename='js/jquery.easing.1.3.js') }}"></script> -->
+  <!-- <script src="{{ url_for('static', filename='js/jquery.waypoints.min.js') }}"></script> -->
+  <!-- <script src="js/jquery.animateNumber.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script> -->
+  <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+
+
+</body>
+
+</html>

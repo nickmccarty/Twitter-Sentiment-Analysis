@@ -40,6 +40,7 @@
             <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
               <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
               <li><a href="{{ url_for('models') }}">Tech</a></li>
+              <li><a href="{{ url_for('api') }}">API</a></li>
               <li><a href="{{ url_for('aboutus') }}">About</a></li>
               <li class="d-lg-none"><a href="{{ url_for('contact') }}">Contact Us</a></li>
             </ul>
@@ -174,10 +175,8 @@
         <br>
 
         <h1 class="font-weight-bold"> Developers </h1>
-        <p> In the near future we will include in this web app the capability to accept direct requests from outside of this web apps front-end, via RESTful API. Developers may also be granted permission
-        to access the Model Serving Server directly, for building prediction into their existing applications or testing to help improve the model.  </p>
+        <p>API access is freely available to developers now. Please see the API documentation for more information.<a href="http://www.erasehateapp.com/api"></a> </p>
         <br>
-        <p> If you are interested in access to the API or model server please contact us. Access requestors will be notified when these services become available.</p>
         <!-- <br>
         <h2 class="font-weight-bold">Endpoint</h2>
         <ul>
@@ -212,6 +211,7 @@
           <div class="col-6 col-md-3 mb-4 mb-md-0">
             <h3>Support</h3>
             <ul class="list-unstyled">
+              <li><a href="{{ url_for('api') }}">API</a></li>
               <li><a href="{{ url_for('support') }}">Support</a></li>
               <li><a href="{{ url_for('terms_privacy') }}">Privacy</a></li>
 

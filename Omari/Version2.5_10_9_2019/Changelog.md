@@ -5,12 +5,18 @@
 #### Add feature - Dedicated API routes
   * Created dedicated Flask views for serving API & Erase Hate Python Library users. These routes serve predictions, and insert reclassed items into DB.
 
+  * Created an API documentation page.
+
   * Files affected - `ModelServer/application.py`, `Main/application.py`
+
+  * Files added - `Main/templates/api.html`
 
   * **Details/README's**
     * API Reclass Submission - Main  | `CHANGELOG.md` [link](https://github.com/oblockton/Erase-Hate-Versioning/blob/master/Version2.5_10_9_2019/Main/CHANGELOG.md 'API reclassification & TweepyMashup Update submission')
 
-    * API Prediction - ModelServer | `CHANGELOG.md` [link](https://github.com/oblockton/Erase-Hate-Versioning/blob/master/Version2.5_10_9_2019/ModelServer/CHANGELOG.md 'ModelServer API prediction')
+    * API Classification requests- Model Sever request redirecting - Main | `CHANGELOG.md` [link](https://github.com/oblockton/Erase-Hate-Versioning/blob/master/Version2.5_10_9_2019/ModelServer/CHANGELOG.md 'ModelServer API prediction')
+
+    * Python Library Classification requests - ModelServer | `CHANGELOG.md` [link](https://github.com/oblockton/Erase-Hate-Versioning/blob/master/Version2.5_10_9_2019/ModelServer/CHANGELOG.md 'ModelServer API prediction')
 
 * **Requirements.txt update to use tweepymashup v1.0.7 `tweepymashup=1.0.7`**
       - no code changes were made to files importing tweepymashup

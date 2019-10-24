@@ -40,6 +40,7 @@
             <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
               <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
               <li><a href="{{ url_for('models') }}">Tech</a></li>
+              <li><a href="{{ url_for('api') }}">API</a></li>
               <li><a href="{{ url_for('aboutus') }}">About</a></li>
               <li class="d-lg-none"><a href="{{ url_for('contact') }}">Contact Us</a></li>
             </ul>
@@ -99,7 +100,7 @@
               <p>Topic: Twitter Specific. Analyze tweets related to the input keyword.</p>
               <p>User: Twitter Specifc. Analyze a specific user's timelime. Username must be exact, with OR without @.</p>
               <!-- <p>Text: Accepts any english text string. Multiple sentences are classified by each senctence. </p> -->
-              <p>Text: Accepts any collection of enlgish words(sentences,paragraphs, etc).</p>
+              <p>Text: Accepts any colleection of enlgish words(sentences,paragraphs, etc).</p>
             </div>
           </div>
         </div>
@@ -127,6 +128,7 @@
           <div class="col-6 col-md-3 mb-4 mb-md-0">
             <h3>Support</h3>
             <ul class="list-unstyled">
+              <li><a href="{{ url_for('api') }}">API</a></li>
               <li><a href="{{ url_for('support') }}">Support</a></li>
               <li><a href="{{ url_for('terms_privacy') }}">Privacy</a></li>
 

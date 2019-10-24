@@ -1,27 +1,65 @@
 # API - api codes and error messages
 ---
+## Dedicated API Classification request route. /model_server, methods = ['POST']
+
+  * A separate route has been added to ingest classification requests. Since the model server is a separate server, it does not have the erasehateapp.com URL. This route redirects model server requests to the model server URL. This route is ONLY used by users making direct post requests for classification. Users of the Python library will send their classification requests directly to the model server URL. This is purely cosmetic, the model server URL is quite long and hard to remember.
+
+ * This new route accepts a list of lists as such.:
+ `[['text/tweet'], ['text2/tweet2'], ['text3/tweet3']]`
+
+ * API codes have been added as such:
+  - 200 = Successful
+  - 500 = Failed. Code error, SQL insert error, or any other exceptions.
+
+  - Error messages are returned to the client with more specific info.
+
+ **Post data must be a list of strings**
+
+
+###  Data sent, not a list
+
+ `if isinstance(input,list):`
+ on failure:
+ `return jsonify({ 'api_code':500, 'message':"Model Server Error, TypeError: prediction input not a list. Proper input ['text','text','text','text']" })
+`
+
+ **API error code**: 500.
+ **Message**: Model Server Error, TypeError: prediction input not a list. Proper input ['text','text','text','text']
+
+### Items in list not strings
+
+ `if all(isinstance(item,str) for item in input):`
+ on failure:
+ `return jsonify({ 'api_code':500, 'message':"Model Server Error, TypeError: one or more items in prediction input not string type.Proper input ['text','text','text','text']" })`
+
+ **API error code**: 500.
+ **Message**:Model Server Error, TypeError: one or more items in prediction input not string type.Proper input ['text','text','text','text']
+
+---
 
 ## Dedicated API reclassification route. /api_reclass_submit, methods = ['POST']
 
   * A separate route has been added to ingest reclassified item. For the most part the route is the same as the route which serves the webpage, however the data parse, outputs and internal print statement have been adjusted to demark API usage, and better serve Erase Hate Python Library users. Return statements now return a response as opposed to render_template(as would happen for the web page.)
 
   * This new route accepts a list of lists as such.:
-  `[['class label', 'text/tweet'], ['classlabel', 'text2/tweet2'], ['classlabel', 'text3/tweet3']]`
+      `[['class label', 'text/tweet'], ['classlabel', 'text2/tweet2'], ['classlabel', 'text3/tweet3']]`
       - **Any reclassification form parsing must be completed by the user, using custom code or the Erase Hate Python Library prior to posting to this route.**
 
-   - With the input being different from the route that serves the webpage, a new sql input helper function has been created. `enter_items_api`
+      - With the input being different from the route that serves the webpage, a new sql input helper function has been created. `enter_items_api`
 
   * API codes have been added as such:
-   - 200 = Successful
-   - 500 = Failed. Code error, SQL insert error, or any other exceptions.
-   - 403 = ACCESS DENIED -SQL Err - authentication
-   - 404 = BAD_DB_ERROR - SQL selected database nonexistent
+    - 200 = Successful
+    - 500 = Failed. Code error, SQL insert error, or any other exceptions.
+    - 403 = ACCESS DENIED -SQL Err - authentication
+    - 404 = BAD_DB_ERROR - SQL selected database nonexistent
 
-   - Error messages are returned to the client with more specific info.
+    - Error messages are returned to the client with more specific info.
 
  **Errors will generally occur in two areas. At validation of POST data, or at SQL insert.**
   - However, since data is validated before SQL insertion is attempted, SQL error should generally not occur.
 ---
+
+
 ##  Validating data in post request.
   Data sent in post request is validated before any SQL insert is attempted. If validation fails, api error codes and message are also returned in the request response.
 
@@ -30,16 +68,16 @@
 > On failure
   `return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. TypeError: data input must be a list.[ [classlabel, text] ] or [ (classlabel,text) ]'})`
 
-**API code**: 500
-**Message**: DB insert Unsuccessful. TypeError: data input must be a list.[ [classlabel, text] ] or [ (classlabel,text) ]
+- **API code**: 500
+- **Message**: DB insert Unsuccessful. TypeError: data input must be a list.[ [classlabel, text] ] or [ (classlabel,text) ]
 
 ### POST data list items , not a list. Post data must be list of lists or list of tuples.
 `if all(isinstance(item,(list,tuple)) for item in reclass_input):`
 > On failure
   `                return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. TypeError: data input must be a list of lists or tuples.[ [classlabel, text] ] or [ (classlabel,text) ]'})`
 
-**API code**: 500
-**Message** : DB insert Unsuccessful. TypeError: data input must be a list of lists or tuples.[ [classlabel, text] ] or [ (classlabel,text) ]
+- **API code**: 500
+- **Message** : DB insert Unsuccessful. TypeError: data input must be a list of lists or tuples.[ [classlabel, text] ] or [ (classlabel,text) ]
 
 ### Class labels not 0,1,or 2
 The post data should have the class labels at the first index as such:
@@ -50,10 +88,12 @@ We check that index to validate if it is a 0,1, or 2.
 > On failure
   ` return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. Class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither'})`
 
-**API code**: 500
-**Message**: DB insert Unsuccessful. Class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither
+- **API code**: 500
+- **Message**: DB insert Unsuccessful. Class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither
 
 ---
+
+
 ## SQL & mysqlconnector specific error handling
 
 ### SQL Access Denied
@@ -67,8 +107,8 @@ This error generally should not occur as the config of sql is handled on the ser
                  cnx.close()
                  return jsonify({ 'api_code':403, 'message':'ACCESS DENIED: {}'.format(err) })`
 
-**API code**: 403
-**Message**: ACCESS DENIED: verbose error details passed  on to user.
+- **API code**: 403
+- **Message**: ACCESS DENIED: verbose error details passed  on to user.
 
 ### Bad DB error
 
@@ -81,8 +121,8 @@ This error generally should not occur as the config of sql is handled on the ser
                 cnx.close()
                 return jsonify({ 'api_code':404, 'message':'BAD_DB_ERROR: {}'.format(err) })`
 
-**API code**: 404
-**Message**: BAD_DB_ERROR: verbose error details passed on to user.
+- **API code**: 404
+- **Message**: BAD_DB_ERROR: verbose error details passed on to user.
 
 ### Inserting a string into a SQL column, which only accepts integers.
 
@@ -95,8 +135,8 @@ This error should not occur. Users may input class labels and text as a string o
                 cnx.close()
                 return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful-Likely Expected integer for class label: {}'.format(str(err)) })`
 
-**API code**: 500
-**Message**: DB insert Unsuccessful-Likely Expected integer for class label:pass on verbose error message from SQL.
+- **API code**: 500
+- **Message**: DB insert Unsuccessful-Likely Expected integer for class label:pass on verbose error message from SQL.
 
 ### Uncaught SQL specific errors
 
@@ -109,8 +149,8 @@ Uncaught SQL errors.
                 cnx.close()
                 return jsonify({ 'api_code':500, 'message':'DB insert Unsuccessful at SQL Exception-else: {}'.format(str(err)) })`
 
-**API code**: 500
-**Message**: DB insert Unsuccessful at SQL Exception-else: verbose error message from SQL passed to user.
+- **API code**: 500
+- **Message**: DB insert Unsuccessful at SQL Exception-else: verbose error message from SQL passed to user.
 
 ### Error casting class label as input as integer.
 
@@ -147,12 +187,12 @@ except ValueError as valerr:
 ~~~~~
 
 * If error was an issue casting class label to integer:
-**API code**: 500
-**Message**: DB insert Unsuccessful at index [0] of your data, Classlabel, expected single digit integer or a single number in string format: passed from enter_items_api() :verbose :error message from python.
+  - **API code**: 500
+  - **Message**: DB insert Unsuccessful at index [0] of your data, Classlabel, expected single digit integer or a single number in string format: passed from enter_items_api() :verbose :error message from python.
 
 * If some other error casting a data type to the correct type for SQL insertion:
-**API code**:500
-**Message**: DB insert Unsuccessful: Uncaught Value error at table entry. check input types. verbose: error message from python
+  - **API code**:500
+  - **Message**: DB insert Unsuccessful: Uncaught Value error at table entry. check input types. verbose: error message from python
 ---
 
 ### Uncaught exception- any other issue with reclassed item submission process.
@@ -165,5 +205,5 @@ Error if any other error occurs that isn't caught.
               cnx.close()
               return jsonify({'api_code':500, 'message':'DB insert Unsuccessful . Uncaught Server Exception: {}'.format(e)})`
 
-**API code**: 500
-**Message**: DB insert Unsuccessful . Uncaught Server Exception: verbose python error message passed on to user
+- **API code**: 500
+- **Message**: DB insert Unsuccessful . Uncaught Server Exception: verbose python error message passed on to user

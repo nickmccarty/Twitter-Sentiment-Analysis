@@ -144,9 +144,13 @@ def support():
 @application.route('/terms_privacy')
 def terms_privacy():
     return render_template('terms_privacy.html')
+    
+@application.route('/api')
+def api():
+    return render_template('api.html')
 
 ####################################################################
-'''Route to process reclassification requests'''
+'''Route to process webpage reclassification requests'''
 #####################################################################
 
 ## Setup the connection config in dict form
@@ -222,6 +226,39 @@ def reclass():
             print('!!!! Error in Reclass Submisson - Not a SQL error !!!!')
             print('Error: {}'.format(e))
             return render_template('support.html', error = "Reclass Submission Error - Submission Unsuccessful")
+
+
+####################################################################
+'''Route to process API model server requests. Re-routes requests to the model server URL'''
+#####################################################################
+@application.route('/model_server', methods=['POST'])
+def api_model_serv():
+    if request.method == 'POST':
+        input = request.json
+        # Check that data sent is a list.
+        if isinstance(input,list):
+            # Verify each item in list is a string.
+            if all(isinstance(item,str) for item in input):
+                # Create a dict with key text. Allows the API to use the same prediction function as the front-end.
+                input = {'text':input}
+                try:
+                    print('***** API PREDICTION REQUEST *****')
+                    print('***############# A snippet of the user input - API ##################*****')
+                    print(input['text'][:3])
+                    print('***############# END SNIPPET - API ##################*****')
+                    prediction = requests.post(url='http://erase-hate-env.vdpppw2jwx.us-west-1.elasticbeanstalk.com/api_receiver', json= input['text'])
+                    results = prediction.json()
+                    return jsonify(results)
+                except Exception as e:
+                    print('!!!!!!!!!!Try/Except fired - API prediction failed: verbose: {} !!!!!!!'.format(e))
+                    return jsonify({ 'api_code':500, 'message':'Model Server Error, Uncaught exception ,Sever Side: verbose: {}'.format(e) })
+            else:
+                print('!!!!!!! An item in iterable prediction input is not string type. - API prediction failed !!!!!!!')
+                return jsonify({ 'api_code':500, 'message':"Model Server Error, TypeError: one or more items in prediction input not string type.Proper input ['text','text','text','text']" })
+        else:
+            print('!!!!!!!!!! Prediction input not a list - API prediction failed !!!!!!!')
+            return jsonify({ 'api_code':500, 'message':"Model Server Error, TypeError: prediction input not a list. Proper input ['text','text','text','text']" })
+
 
 
 ###########################################################################
@@ -323,7 +360,7 @@ def reclass_api():
                 # Validate each class label is 0,1,or 2, on failure respond with error message.
                 else:
                     print('!!!! Error in Reclass Submisson - Input contained class label that was not 0, 1, or 2 - API SUBMIT REQUEST !!!!')
-                    return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. Class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither'})
+                    return jsonify({'api_code':500, 'message':'DB insert Unsuccessful. ValueError: class labels must be 0, 1, or 2. Integer or string.[ [classlabel, text] ] or [ (classlabel,text) ]. 0 =hate, 1 =offensive, 2 =neither'})
             # Validate each item is list or tuple. On failure respond with appropriate API error message.
             else:
                 print('!!!! Error in Reclass Submisson - Submission list items are not a list or tuple - API SUBMIT REQUEST !!!!')
