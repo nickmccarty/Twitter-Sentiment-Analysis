@@ -103,7 +103,7 @@
         <span> <strong>** The API currently does not currently impose rate limits on requests. Please be kind and limit requests to 135 requests per minute. Each request should contain no more that 400 items to process.**</strong></span>
         <br>
         <br>
-        <ul><h2> Endpoints</h2>
+        <ul style="list-style: none;"><h2> Endpoints</h2>
           <br>
           <li><h3> /model_server </h3>
             <span> Use this endpoint to make classification requests. Text items sent to this endpoint will be predicted/classified as 'hate', 'offensive', or 'neither'.
@@ -205,7 +205,7 @@
             if results['api_code'] == 200:
               *do something*
             elif results['api_code'] == 500:
-              print(results['message'])
+              print(results)
           </code></pre>
           <span><strong>Output:</strong></span>
           <samp>{ 'api_code':500, 'message':"Model Server Error, TypeError: prediction input not a list. Proper input ['text','text','text','text']" }</samp>
