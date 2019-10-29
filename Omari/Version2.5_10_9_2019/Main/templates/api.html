@@ -40,7 +40,7 @@
             <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
               <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
               <li><a href="{{ url_for('models') }}">Tech</a></li>
-              <li><a href="{{ url_for('api') }}">API</a></li>
+              <li><a href="{{ url_for('api_support') }}">API</a></li>
               <li><a href="{{ url_for('aboutus') }}">About</a></li>
               <li class="d-lg-none"><a href="{{ url_for('contact') }}">Contact Us</a></li>
             </ul>
@@ -100,10 +100,10 @@
         <br>
         <h1 class=""><strong>API Documentation</strong></h1>
         <br>
-        <span> <strong>** The API currently does not currently impose rate limits on requests. Please be kind and limit requests to 135 requests per minute. Each request should contain no more that 400 items to process.**</strong></span>
-        <br>
-        <br>
         <ul style="list-style: none;"><h2> Endpoints</h2>
+          <br>
+          <span> <strong>** The API currently does not currently impose rate limits on requests. Please be kind and limit requests to 135 requests per minute. Each request should contain no more that 400 items to process.**</strong></span>
+          <br>
           <br>
           <li><h3> /model_server </h3>
             <span> Use this endpoint to make classification requests. Text items sent to this endpoint will be predicted/classified as 'hate', 'offensive', or 'neither'.
@@ -171,7 +171,7 @@
             <span><strong>Example</strong>: Making a successful submission request, validating the response, and printing the results.</span>
             <pre><code>
               sample_data = [ [0, 'text'], [1, 'text_item2'], [2, 'text_item3'] ]
-              response = requests.post(url='https:://wwww.erasehateapp.com/api_reclass_submit', json=sample_data)
+              response = requests.post(url='https://www.erasehateapp.com/api_reclass_submit', json=sample_data)
               results = response.json()
               if results['api_code'] == 200:
                 print(results)
@@ -200,7 +200,7 @@
           <span><strong>Example</strong>: Making an invalid classification request by sending a python dictionary as our post data. Validating the response and printing the COMPLETE error response.</span>
           <pre><code>
             sample_data = {'sample_key':['text1','text2','text3']}
-            response = requests.post(url='https:://wwww.erasehateapp.com/model_server', json=sample_data)
+            response = requests.post(url='https://www.erasehateapp.com/model_server', json=sample_data)
             results = response.json()
             if results['api_code'] == 200:
               *do something*
@@ -243,7 +243,7 @@
           <div class="col-6 col-md-3 mb-4 mb-md-0">
             <h3>Support</h3>
             <ul class="list-unstyled">
-              <li><a href="{{ url_for('api') }}">API</a></li>
+              <li><a href="{{ url_for('api_support') }}">API</a></li>
               <li><a href="{{ url_for('support') }}">Support</a></li>
               <li><a href="{{ url_for('terms_privacy') }}">Privacy</a></li>
 

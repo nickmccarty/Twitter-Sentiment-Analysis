@@ -144,9 +144,9 @@ def support():
 @application.route('/terms_privacy')
 def terms_privacy():
     return render_template('terms_privacy.html')
-    
+
 @application.route('/api')
-def api():
+def api_support():
     return render_template('api.html')
 
 ####################################################################
