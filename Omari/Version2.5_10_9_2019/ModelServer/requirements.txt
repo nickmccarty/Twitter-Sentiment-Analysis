@@ -24,7 +24,7 @@ Keras-Preprocessing==1.1.0
 lxml==4.4.0
 Markdown==3.1.1
 MarkupSafe==1.1.1
-nltk==3.4.4
+nltk==3.4.5
 numpy==1.16.4
 protobuf==3.9.0
 PySocks==1.7.0
