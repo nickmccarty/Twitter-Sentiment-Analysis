@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Hate Speech Detection</title>
+    <title>Results:Hate Speech Detection</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="../static/css/custom-bs.css">
@@ -12,8 +12,6 @@
     <!-- <link rel="stylesheet" href="../static/css/owl.carousel.min.css"> -->
     <!-- <link rel="stylesheet" href="../static/css/animate.min.css"> -->
     <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
-
   </head>
   <body id="top">
 
@@ -38,7 +36,7 @@
 
           <nav class="mx-auto site-navigation">
             <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-              <li><a href="{{ url_for('index')}}" class="nav-link active">Home</a></li>
+              <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
               <li><a href="{{ url_for('models') }}">Tech</a></li>
               <li><a href="{{ url_for('api_support') }}">API</a></li>
               <li><a href="{{ url_for('aboutus') }}">About</a></li>
@@ -48,7 +46,7 @@
 
           <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
             <div class="ml-auto">
-              <a href="{{ url_for('contact') }}" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-paper-plane"></span>Contact Us</a>
+              <a href="contact.html" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-paper-plane"></span>Contact Us</a>
             </div>
             <a href="#" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span class="icon-menu h3 m-0 p-0 mt-2"></span></a>
           </div>
@@ -63,13 +61,72 @@
         <div class="row align-items-center justify-content-center">
           <div class="col-md-12">
             <div class="mb-5 text-center">
-              <h1 class="text-white font-weight-bold">Smart Hate Speech Detection </h1>
-              <p>Using Machine Learning and neural networks in the mission to erase hate.</p>
+              <h1 class="text-white font-weight-bold">Results</h1>
+
+              <!-- <label for="querytypeinput"><h3 style="color:rgba(255, 255, 255, 0.6);">You searched within</h3></label>
+              <label for="keyword" id="querytypeinput"><h3 class="text-white font-weight-bold"> {{query_type}}: </h3></label> -->
+              <h3 style="color:rgba(255, 255, 255, 0.6);">You searched within
+                <span class="text-white font-weight-bold"> {{query_type}}: </span>
+              </h3>
+              <p id="keyword" style="color:rgba(255, 255, 255, 0.6);">{{text_snip}}
+                <span> ...Truncated text</span>
+              </p>
+              <br>
+              <!-- <h5 style="color:rgba(255, 255, 255, 0.6);">Item count is the number of sentences.A single word, or single sentence is 1 item.Example: <a href="#">Support. </a></h5> -->
+              <h4 style="color:rgba(255, 255, 255, 0.6);">Total count of items classified using
+                <span class="text-white font-weight-bold"> {{model_type}}</span>
+                <span id="count_tweets" style="color:#89F47F;">: {{count_items}} </span>
+              </h4>
+
+              <br>
+              <br>
+              <h3 class="text-white">Hateful items:
+                <span id="" style="color:#FB6D65;"> {{hate_count}} | </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#FB6D65;"> {{hate_percent}} </span>
+              </h3>
+              <h3 class="text-white">Hurtful items:
+                <span id="" style="color:#FBF279;"> {{hurt_count}} | </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#FBF279;"> {{hurt_percent}} </span>
+              </h3>
+              <h3 class="text-white">Harmless items:
+                <span id="" style="color:#89F47F;"> {{neither_count}} | </span>
+                <span id="" class="text-white"> % of total: </span>
+                <span id="" style="color:#89F47F;"> {{neither_percent}} </span>
+              </h3>
             </div>
-            <div id="form-outer" class="">
-              <form name="searchForm" action='/predict' method="POST" class="search-jobs-form">
-                <div id="spinner">
+            <br>
+            <h1 class="text-white font-weight-bold">Text classified as {{ form_opt_data[0] }}:</h1>
+            <h3 class="text-white">Disagree?</h3>
+            <span>Help improve the model by reclassifying the text. If you don't agree with the '{{ form_opt_data[1] }}' classification, choose which class you think is best. </span>
+            <hr style="color:white;width:100%;">
+
+            <form action='/reclass' method="POST" class="search-jobs-form">
+              <div class="col-12">
+                <div id="reclass" class="col-12">
+                  {% for item in reclass_data %}
+                    <div class="row">
+                      <p class='text-white'>{{ item[0] }}</p>
+                      <select class="form-control" name="{{ item[2] }}">
+                        <option value="{{ form_opt_data[2] }}{{ item[0] }}">{{ form_opt_data[3] }}</option>
+                        <option value="{{ form_opt_data[4] }}{{ item[0] }}">{{ form_opt_data[5] }}</option>
+                        <option value="{{ form_opt_data[6] }}{{ item[0] }}">{{ form_opt_data[7] }}</option>
+                      </select>
+                    </div>
+                    <hr style="color:lavender;width:100%;">
+                  {% endfor %}
                 </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                  <button type="submit" value="Submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="mr-2 icon-paper-plane"></span>Submit</button>
+                </div>
+              </div>
+            </form>
+
+            <hr style="color:white;width:100%;">
+            <h1 class="text-white font-weight-bold">Next search</h1>
+
+            <form action='/predict' method="POST" class="search-jobs-form">
               <div class="row mb-5">
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
                   <input id="queryinput" name="query_input" type="text" class="form-control form-control-lg" placeholder="Topic,Name,keywords...">
@@ -89,19 +146,11 @@
                   </select>
                 </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                  <button id="formSubmit" type="submit" value="Submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Contains hate speech?</button>
+                  <button type="submit" value="Submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Contains hate speech?</button>
                 </div>
-                <br>
               </div>
             </form>
-            </div>
 
-            <div class="row align-items-center justify-content-center">
-              <p>Topic: Twitter Specific. Analyze tweets related to the input keyword.</p>
-              <p>User: Twitter Specifc. Analyze a specific user's timelime. Username must be exact, with OR without @.</p>
-              <!-- <p>Text: Accepts any english text string. Multiple sentences are classified by each senctence. </p> -->
-              <p>Text: Accepts any colleection of enlgish words(sentences,paragraphs, etc).</p>
-            </div>
           </div>
         </div>
       </div>
@@ -129,7 +178,7 @@
             <h3>Support</h3>
             <ul class="list-unstyled">
               <li><a href="{{ url_for('api_support') }}">API</a></li>
-              <li><a href="{{ url_for('support') }}">Support</a></li>
+              <li><a href"{{ url_for('support') }}">Support</a></li>
               <li><a href="{{ url_for('terms_privacy') }}">Privacy</a></li>
 
             </ul>
@@ -174,6 +223,10 @@
     <!-- <script src="js/jquery.animateNumber.min.js"></script>
     <script src="js/owl.carousel.min.js"></script> -->
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <!-- <script type="text/javascript">
+      $('index.html #form-outer').empty();
+
+    </script> -->
 
 
   </body>

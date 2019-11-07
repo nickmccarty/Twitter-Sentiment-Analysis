@@ -100,10 +100,10 @@
         <br>
         <h1 class=""><strong>API Documentation</strong></h1>
         <br>
+        <span> <strong>** The API currently does not currently impose rate limits on requests. Please be kind and limit requests to 135 requests per minute. Each request should contain no more that 400 items to process.**</strong></span>
+        <br>
+        <br>
         <ul style="list-style: none;"><h2> Endpoints</h2>
-          <br>
-          <span> <strong>** The API currently does not currently impose rate limits on requests. Please be kind and limit requests to 135 requests per minute. Each request should contain no more that 400 items to process.**</strong></span>
-          <br>
           <br>
           <li><h3> /model_server </h3>
             <span> Use this endpoint to make classification requests. Text items sent to this endpoint will be predicted/classified as 'hate', 'offensive', or 'neither'.
@@ -119,8 +119,8 @@
             <ul>
               <li><strong>'api_code'</strong>: The api code, 200 if successful. Integer</li>
               <li><strong>'prediction_array'</strong>: The probability arrays and direct output of the LSTM model. Each item within the outermost list, is a probability array.
-              Each probabilty array corresponds to a single text items. The list of probability arrays runs parallel to list of text items sent for classification( your input).
-              Meaning the probabiltyarray at 'prediction_array[1]', corresponds to the text item at 'your_input[1]'.</li>
+              Each probabilty array corresponds to a single text item. The list of probability arrays runs parallel to list of text items sent for classification( your input).
+              Meaning the probabilty array at 'prediction_array[1]', corresponds to the text item at 'your_input[1]'.</li>
               <li><strong>'hate_data'</strong>: Aggregates for items classified as 'hate'. A dictionary with keys 'count' & 'percentTotal'.</li>
               <li><strong>'hurt_data'</strong>: Aggregates for items classified as 'offensive'. A dictionary with keys 'count' & 'percentTotal'.</li>
               <li><strong>'neither_data'</strong>: Aggregates for items classified as 'neither'. A dictionary with keys 'count' & 'percentTotal'.</li>
@@ -131,7 +131,7 @@
             <span><strong>Example</strong>: Making a successful classification request, validating the response, and printing the results.</span>
             <pre><code>
               sample_data = ['text1','text2','text3']
-              response = requests.post(url='https:://wwww.erasehateapp.com/model_server', json=sample_data)
+              response = requests.post(url='https://www.erasehateapp.com/model_server', json=sample_data)
               results = response.json()
               if results['api_code'] == 200:
                 print(results)
@@ -149,7 +149,7 @@
           </li>
           <br>
           <li><h3> /api_reclass_submit </h3>
-            <span> Use this endpoint to make submit text items that were classified by humans as 'hate', 'offensive', or 'neither'. These items may be items that were initally classified by humans, or items initally classified
+            <span> Use this endpoint to submit text items that were classified by humans as 'hate', 'offensive', or 'neither'. These items may be items that were initally classified by humans, or items initally classified
             by our model then reclassified by human end users. The items sent will be used to help retrain our model and improve accuracy. The response to submission requests will contain an API code, and an API message.
             <strong>All data sent to this endpoint is anonymized and no personally identifying information will be stored.</strong></span>
             <br>
@@ -171,7 +171,7 @@
             <span><strong>Example</strong>: Making a successful submission request, validating the response, and printing the results.</span>
             <pre><code>
               sample_data = [ [0, 'text'], [1, 'text_item2'], [2, 'text_item3'] ]
-              response = requests.post(url='https://www.erasehateapp.com/api_reclass_submit', json=sample_data)
+              response = requests.post(url='https:://wwww.erasehateapp.com/api_reclass_submit', json=sample_data)
               results = response.json()
               if results['api_code'] == 200:
                 print(results)
@@ -213,7 +213,7 @@
           <br>
           <h3>404 & 403</h3>
           <br>
-          <p> You generally should not receive an API 404 or 403 error. These errorz usually are the result of an unsuccessful insert of classified items into our database.
+          <p> You generally should not receive an API 404 or 403 error. These errors usually are the result of an unsuccessful insert of classified items into our database.
           If you have received a 404 or 403 API code, please contact us: EraseHateData@gmail.com. </p>
 
 

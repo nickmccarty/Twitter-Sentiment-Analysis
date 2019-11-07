@@ -92,10 +92,11 @@
             </div>
             <br>
 
-            <h1 class="text-white font-weight-bold">Tweets classified as Hate Speech:</h1>
+            <h1 class="text-white font-weight-bold">Tweets classified as {{ form_opt_data[0] }}:</h1>
             <h3 class="text-white">Disagree?</h3>
-            <span>Help improve the model by reclassifying tweets. If you don't agree with the "hate" predictions, choose which class you think is best. </span>
-            <span> If you're search returned more than 5 'hateful' tweets, a max of 5 will be shown below. </span>
+            <span>Help improve the model by reclassifying tweets. If you don't agree with the '{{ form_opt_data[1] }}' classification, choose which class you think is best.
+            If you DO agree, leave it as 'no change' and submit! </span>
+            <span> A sample of 5 '{{form_opt_data[1]}}' tweets, are shown below. </span>
             <hr style="color:white;width:100%;">
 
             <form action='/reclass' method="POST" class="search-jobs-form">
@@ -105,9 +106,9 @@
                     <div class="row">
                       <p class='text-white'>{{ item[0] }}</p>
                       <select class="form-control" name="{{ item[2] }}">
-                        <option value="0 delimiter {{ item[0] }}">No Change</option>
-                        <option value="1 delimiter {{ item[0] }}">Hurtful</option>
-                        <option value="2 delimiter {{ item[0] }}">Harmless</option>
+                        <option value="{{ form_opt_data[2] }}{{ item[0] }}">{{ form_opt_data[3] }}</option>
+                        <option value="{{ form_opt_data[4] }}{{ item[0] }}">{{ form_opt_data[5] }}</option>
+                        <option value="{{ form_opt_data[6] }}{{ item[0] }}">{{ form_opt_data[7] }}</option>
                       </select>
                     </div>
                     <hr style="color:lavender;width:100%;">

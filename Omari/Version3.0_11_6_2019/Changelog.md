@@ -1,6 +1,21 @@
 
 # CHANGELOG
 
+## V3.0 11/6/2019
+#### Add feature - Reclassification option for all classes
+  * Allow the ability to reclassify tweets from either available class(hate, offensive, neither). If no hateful results were returned, then users may classify offensive items. If no offensive items, then users may reclassify 'harmless' items.
+
+  * Increase coverage for Twitter API errors(401, nonexistent topics or users), and coverage for search form submit errors( no input in text field).
+
+  * Files affected - `Main/application.py` `Main/templates/results_text.html` `Main/templates/results_tweets.html`
+
+  * Files added - `Main/form_builder.py`
+
+  * **Details/README's**
+    * Reclass Form Changes - Main  | `CHANGELOG.md` [Reclass Form Changes](https://github.com/oblockton/Erase-Hate-Versioning/blob/master/Version3.0_11_6_2019/Main/CHANGELOG.md 'Reclassification Form Building')
+
+    
+
 ## V2.5 10/9/2019
 #### Add feature - Dedicated API routes
   * Created dedicated Flask views for serving API & Erase Hate Python Library users. These routes serve predictions, and insert reclassed items into DB.
