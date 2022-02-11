@@ -21,7 +21,7 @@ mysql-connector-python==8.0.17
 nltk==3.4.5
 numpy==1.16.4
 oauthlib==3.0.2
-protobuf==3.9.1
+protobuf==3.15.0
 Pyphen==0.9.5
 PySocks==1.7.0
 python-dateutil==2.8.0
