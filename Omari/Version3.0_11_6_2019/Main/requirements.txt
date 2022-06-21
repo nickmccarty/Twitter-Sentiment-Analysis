@@ -19,7 +19,7 @@ Markdown==3.1.1
 MarkupSafe==1.1.1
 mysql-connector-python==8.0.17
 nltk==3.4.5
-numpy==1.16.4
+numpy==1.22.0
 oauthlib==3.0.2
 protobuf==3.9.1
 Pyphen==0.9.5
