@@ -24,7 +24,7 @@ MarkupSafe==1.1.1
 nltk==3.4.4
 numpy==1.16.4
 oauthlib==3.0.2
-protobuf==3.9.0
+protobuf==3.18.3
 Pyphen==0.9.5
 PySocks==1.7.0
 python-dateutil==2.8.0
